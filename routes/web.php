@@ -44,4 +44,4 @@ Route::group(['prefix' => '/', 'middleware' => 'auth'],function () {
     });
 });
 
-Auth::routes(['register' => false]);
+Auth::routes();

@@ -2,7 +2,7 @@
 <html lang="en">
     <head>
         <meta charset="utf-8">
-        <title>Log In | UBold - Responsive Admin Dashboard Template</title>
+        <title>Log In</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta content="A fully featured admin theme which can be used to build CRM, CMS, etc." name="description">
         <meta content="Coderthemes" name="author">
@@ -109,7 +109,7 @@
                         <div class="row mt-3">
                             <div class="col-12 text-center">
                                 <p> <a href="auth-recoverpw.html" class="text-white-50 ml-1">Forgot your password?</a></p>
-                                <p class="text-white-50">Don't have an account? <a href="auth-register.html" class="text-white ml-1"><b>Sign Up</b></a></p>
+                                <p class="text-white-50">Don't have an account? <a href="{{route('register')}}" class="text-white ml-1"><b>Sign Up</b></a></p>
                             </div> <!-- end col -->
                         </div>
                         <!-- end row -->
