@@ -8,6 +8,7 @@ use App\Http\Requests\ProductRequest;
 use Illuminate\Support\Facades\File;
 use Carbon\Carbon;
 use Str;
+use Illuminate\Support\Facades\Validator;
 
 class ProductController extends Controller
 {
@@ -16,26 +17,17 @@ class ProductController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $data['products'] = Product::get();
-        return view('backend.product.index',$data);
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {   
-        $data['categories'] = Category::where('parent_id',0)->get();
-        foreach($data['categories'] as $category){
-            $category['child'] = false;
-            $category['children'] = $category->children;
-            if($category['children']->count() !=0) $category['child'] = true;
-        }
-        return view('backend.product.add', $data);
+        $page = $request->get('page', 1);
+        $category = $request->get('category',null);
+        $products = Product::where('category_id', $category)->paginate(10,'*','page',$page);
+        return response()->json([
+            'code'      => 200,
+            'status'    => 'success',
+            'messeger'  => 'Get list product successfully',
+            'result'    => $products
+        ], 200);
     }
 
     /**
@@ -46,10 +38,19 @@ class ProductController extends Controller
      */
     public function store(ProductRequest $request)
     {
-        $request['slug'] = Str::slug($request->name);
-        $request->has('active') ? $request['active'] = true : $request['active'] = false;
-        Product::create($this->saveImage($request));
-        return back();
+        try {
+            $request['slug'] = Str::slug($request->name);
+            $request->has('active') ? $request['active'] = true : $request['active'] = false;
+            Product::create($this->saveImage($request));
+            return response()->json([
+                'code'      => 200,
+                'status'    => 'success',
+                'messeger'  => 'Add product successfully',
+            ], 200);
+        } catch (\Throwable $th) {
+            return $th;
+        }
+        
     }
 
     protected function saveImage($request){
@@ -76,27 +77,14 @@ class ProductController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show($product)
     {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($product)
-    {
-        $data['categories'] = Category::where('parent_id',0)->get();
-        foreach($data['categories'] as $category){
-            $category['child'] = false;
-            $category['children'] = $category->children;
-            if($category['children']->count() !=0) $category['child'] = true;
-        }
-        $data['product'] = Product::find($product);
-        return view('backend.product.edit', $data);
+        return response()->json([
+            'code'      => 200,
+            'status'    => 'success',
+            'messeger'  => 'Get product successfully',
+            'result'    => Product::find($product)
+        ], 200);
     }
 
     /**
@@ -106,17 +94,21 @@ class ProductController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(ProductRequest $request, $product)
+    public function update(ProductRequest $request)
     {
         $request['slug'] = Str::slug($request->slug);
         $request->has('active') ? $request['active'] = true : $request['active'] = false;
         if($request->hasFile('avatar')){
-            Product::find($product)->update($this->saveImage($request));
+            Product::find($request->id)->update($this->saveImage($request));
         }else{
             unset($request['avatar']);
-            Product::find($product)->update($request->all());
+            Product::find($request->id)->update($request->all());
         }
-        return redirect()->route('product.index');
+        return response()->json([
+            'code'      => 200,
+            'status'    => 'success',
+            'messeger'  => 'Update product successfully',
+        ], 200);
     }
 
     /**
@@ -127,7 +119,17 @@ class ProductController extends Controller
      */
     public function destroy($product)
     {
-        Product::find($product)->delete();
-        return redirect()->route('product.index');
+        if(Product::find($product)->delete())
+            return response()->json([
+                'code'      => 200,
+                'status'    => 'success',
+                'messeger'  => 'Delete product successfully',
+            ], 200);
+        else
+            return response()->json([
+                'code'      => 200,
+                'status'    => 'failed',
+                'messeger'  => 'Delete product failed',
+            ], 200);
     }
 }

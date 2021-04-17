@@ -18,19 +18,23 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        $data['categories'] = Category::get();
-        return view('backend.category.index', $data);
+        $categories = Category::get();
+        return response()->json([
+            'code'      => 200,
+            'status'    => 'success',
+            'messeger'  => 'Get list category successfully',
+            'result'    => $categories
+        ], 200);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
+    public function show($category)
     {
-        $data['categories'] = Category::select('id','name')->where('parent_id',0)->get();
-        return view('backend.category.add', $data);
+        return response()->json([
+            'code'      => 200,
+            'status'    => 'success',
+            'messeger'  => 'Get category successfully',
+            'result'    => Category::with('product')->find($category)
+        ], 200);
     }
 
     /**
@@ -41,23 +45,23 @@ class CategoryController extends Controller
      */
     public function store(CategoryRequest $request)
     {
-        $request['slug'] = Str::slug($request->name);
-        $request->has('active') ? $request['active'] = true : $request['active'] = false;
-        Category::create($request->all());
-        return back();
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Category  $category
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {   
-        $data['categories'] = Category::select('id','name')->get();
-        $data['category'] = Category::find($id);
-        return view('backend.category.edit', $data);
+        try {
+            $request['slug'] = Str::slug($request->name);
+            $request->has('active') ? $request['active'] = true : $request['active'] = false;
+            Category::create($request->all());
+            return response()->json([
+                'code'      => 200,
+                'status'    => 'success',
+                'messeger'  => 'Add category successfully',
+            ], 200);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'code'      => 200,
+                'status'    => 'failed',
+                'messeger'  => 'Add category failed',
+            ], 200);
+        }
+        
     }
 
     /**
@@ -67,12 +71,17 @@ class CategoryController extends Controller
      * @param  \App\Models\Category  $category
      * @return \Illuminate\Http\Response
      */
-    public function update(CategoryRequest $request, $id)
+    public function update(CategoryRequest $request)
     {
+        dd($request->all());
         $request['slug'] = Str::slug($request->slug);
         $request->has('active') ? $request['active'] = true : $request['active'] = false;
-        $category = Category::find($id)->update($request->all());
-        return redirect()->route('category.index');
+        $category = Category::find($request->id)->update($request->all());
+        return response()->json([
+            'code'      => 200,
+            'status'    => 'success',
+            'messeger'  => 'Update category successfully',
+        ], 200);
     }
 
     /**
@@ -83,7 +92,17 @@ class CategoryController extends Controller
      */
     public function destroy($category)
     {
-        Category::find($category)->delete();
-        return redirect()->route('category.index');
+        if (Category::find($category)->delete())
+            return response()->json([
+                'code'      => 200,
+                'status'    => 'success',
+                'messeger'  => 'Delete category successfully',
+            ], 200);
+        else
+            return response()->json([
+                'code'      => 200,
+                'status'    => 'failed',
+                'messeger'  => 'Delete category failed',
+            ], 200);
     }
 }

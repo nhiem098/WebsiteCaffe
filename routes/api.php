@@ -13,7 +13,12 @@ use Illuminate\Support\Facades\Route;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
+Route::apiResource('product', 'ProductController')->only([
+    'index', 'show', 'store', 'destroy'
+]);
+Route::put('/product', 'ProductController@update')->name('product.update');
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
-});
+Route::apiResource('category', 'CategoryController')->only([
+    'index', 'show', 'store', 'destroy'
+]);
+Route::put('/category', 'CategoryController@update')->name('category.update');
