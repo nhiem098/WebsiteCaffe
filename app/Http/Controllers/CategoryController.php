@@ -100,9 +100,9 @@ class CategoryController extends Controller
             ], 200);
         else
             return response()->json([
-                'code'      => 200,
+                'code'      => 400,
                 'status'    => 'failed',
                 'messeger'  => 'Delete category failed',
-            ], 200);
+            ], 400);
     }
 }
