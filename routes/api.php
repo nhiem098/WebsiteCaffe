@@ -2,7 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-
+use Illuminate\Support\Facades\Auth;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -13,12 +13,16 @@ use Illuminate\Support\Facades\Route;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
-Route::apiResource('product', 'ProductController')->only([
-    'index', 'show', 'store', 'destroy'
-]);
-Route::put('/product', 'ProductController@update')->name('product.update');
+Route::post('/login', 'AuthController@login')->name('login');
+Route::middleware(['auth'])->group(function () {
+    Route::post('/logout', 'AuthController@logout');
+    Route::apiResource('product', 'ProductController')->only([
+        'index', 'show', 'store', 'destroy'
+    ]);
+    Route::put('/product', 'ProductController@update')->name('product.update');
 
-Route::apiResource('category', 'CategoryController')->only([
-    'index', 'show', 'store', 'destroy'
-]);
-Route::put('/category', 'CategoryController@update')->name('category.update');
+    Route::apiResource('category', 'CategoryController')->only([
+        'index', 'show', 'store', 'destroy'
+    ]);
+    Route::put('/category', 'CategoryController@update')->name('category.update');
+});

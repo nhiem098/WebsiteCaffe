@@ -73,7 +73,6 @@ class CategoryController extends Controller
      */
     public function update(CategoryRequest $request)
     {
-        dd($request->all());
         $request['slug'] = Str::slug($request->slug);
         $request->has('active') ? $request['active'] = true : $request['active'] = false;
         $category = Category::find($request->id)->update($request->all());
