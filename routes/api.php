@@ -25,4 +25,12 @@ Route::middleware(['auth'])->group(function () {
         'index', 'show', 'store', 'destroy'
     ]);
     Route::put('/category', 'CategoryController@update')->name('category.update');
+
+    Route::prefix('order')->group(function () {
+        Route::get('/', 'OrderController@index');                           // Show all order
+        Route::get('/get-order-by-user', 'OrderController@getOrderUser');   // Show all order theo user_id
+        Route::post('/', 'OrderController@store');                          // Create new order
+        Route::delete('/', 'OrderController@destroy');                      // Delete order
+        Route::get('/{order}', 'OrderController@show');                     // Find order
+    });
 });
