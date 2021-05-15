@@ -109,7 +109,8 @@ class OrderController extends Controller
         try {
             $total = 0;
             $order = Order::create([
-                'user_id' => Auth::user()->id,
+                // 'user_id' => Auth::user()->id,
+                'user_id' => 1,
                 'total'   => $total
             ]);
             foreach($request->product as $value){

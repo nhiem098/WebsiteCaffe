@@ -38,7 +38,7 @@ class CreateOrderRequest extends FormRequest
     public function rules()
     {
         return [
-            'product' => 'required',
+            'products' => 'required',
         ];
     }
 
