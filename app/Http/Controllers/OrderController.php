@@ -12,6 +12,9 @@ class OrderController extends Controller
     public function index(){
         try {
             $orders = Order::all();
+            foreach($orders as $order){
+                $order['product_type'] =  $this->countTypeProduct($order->orderDetail);
+            }
             return response()->json([
                 'code'  => 200,
                 'status' => 'success',
@@ -29,6 +32,9 @@ class OrderController extends Controller
             if($user_id){
                 $order = Order::where('user_id', $user_id)->get();
                 if($order){
+                    foreach($order as $item){
+                        $item['product_type'] =  $this->countTypeProduct($item->orderDetail);
+                    }
                     return response()->json([
                         'code'  => 200,
                         'status' => 'success',
@@ -57,6 +63,7 @@ class OrderController extends Controller
     public function show($order){
         try {
             $order = Order::find($order);
+            $order['product_type'] =  $this->countTypeProduct($order->orderDetail);
             if($order){
                 return response()->json([
                     'code'  => 200,
@@ -74,6 +81,19 @@ class OrderController extends Controller
         } catch (\Exception  $e) {
             return $this->outputError($e);
         }
+    }
+
+    private function countTypeProduct($order){
+        $total = 0;
+        $type = array();
+        foreach($order as $key => $detail){
+            $product = Product::find($detail->product_id);
+            if(!in_array($product->category_id, $type)){
+                $type[] = $product->category_id;
+                $total++;
+            }
+        }
+        return $total;
     }
 
     protected function outputError($e){
