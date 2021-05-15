@@ -92,16 +92,14 @@ class OrderController extends Controller
                 'user_id' => Auth::user()->id,
                 'total'   => $total
             ]);
-            $number = $request->number;
-            
-            foreach($request->product as $key => $product_id){
-                $product = Product::find($product_id);
-                $tmpNumber = $number[$key] ?? 1;
+            foreach($request->product as $value){
+                $product = Product::find($value->id ?? $value['id']);
+                $number = (int) ($value->number ?? $value['number']) ?? 1;
                 $detail = $order->orderDetail()->create([
                     'product_id' => $product->id,
-                    'number'     => $tmpNumber,
+                    'number'     => $number,
                     'price'      => $product->price,
-                    'total'      => $tmpNumber * $product->price,
+                    'total'      => $number * $product->price,
                 ]);
                 $total = $total + $detail->total;
             }
@@ -119,7 +117,8 @@ class OrderController extends Controller
     public function destroy(Request $request){
         try {
             if($request->get('order_id', null)){
-                $order = Order::without('orderDetail', 'user')->find($request->order_id);
+                // $order = Order::without('orderDetail', 'user')->find($request->order_id);
+                $order = Order::without('orderDetail')->find($request->order_id);
                 if(!$order)
                     return response()->json([
                         'code'  => 400,
