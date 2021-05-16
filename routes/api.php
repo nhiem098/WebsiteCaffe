@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\Auth;
 |
 */
 Route::post('/login', 'AuthController@login')->name('login');
-Route::middleware(['auth'])->group(function () {
+//Route::middleware(['auth'])->group(function () {
     Route::post('/logout', 'AuthController@logout');
     Route::apiResource('product', 'ProductController')->only([
         'index', 'show', 'store', 'destroy'
@@ -33,4 +33,4 @@ Route::middleware(['auth'])->group(function () {
         Route::delete('/', 'OrderController@destroy');                      // Delete order
         Route::get('/{order}', 'OrderController@show');                     // Find order
     });
-});
+//});
