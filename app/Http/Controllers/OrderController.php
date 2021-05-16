@@ -115,14 +115,16 @@ class OrderController extends Controller
             ]);
             foreach($request->products as $value){
                 $product = Product::find($value->id ?? $value['id']);
-                $number = (int) ($value->number ?? $value['number']) ?? 1;
-                $detail = $order->orderDetail()->create([
-                    'product_id' => $product->id,
-                    'number'     => $number,
-                    'price'      => $product->price,
-                    'total'      => $number * $product->price,
-                ]);
-                $total = $total + $detail->total;
+                if($product){
+                    $number = (int) ($value->number ?? $value['number']) ?? 1;
+                    $detail = $order->orderDetail()->create([
+                        'product_id' => $product->id,
+                        'number'     => $number,
+                        'price'      => $product->price,
+                        'total'      => $number * $product->price,
+                    ]);
+                    $total = $total + $detail->total;
+                }
             }
             $order->update(['total' => $total]);
             return response()->json([
