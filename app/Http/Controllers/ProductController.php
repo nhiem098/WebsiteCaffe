@@ -21,7 +21,9 @@ class ProductController extends Controller
     {
         $page = $request->get('page', 1);
         $category = $request->get('category',null);
-        $products = Product::where('category_id', $category)->paginate(10,'*','page',$page);
+        $pageLength = $request->get('length',5);
+        $pageLength = (int)$pageLength;
+        $products = Product::where('category_id', $category)->paginate($pageLength,'*','page',$page);
         return response()->json([
             'code'      => 200,
             'status'    => 'success',
@@ -41,7 +43,7 @@ class ProductController extends Controller
         try {
             $request['slug'] = Str::slug($request->name);
             $request->has('active') ? $request['active'] = true : $request['active'] = false;
-            Product::create($this->saveImage($request));
+            Product::create($request->all());
             return response()->json([
                 'code'      => 200,
                 'status'    => 'success',
@@ -50,15 +52,11 @@ class ProductController extends Controller
         } catch (\Throwable $th) {
             return $th;
         }
-        
+
     }
 
     protected function saveImage($request){
         $data = $request->except('avatar');
-        //delete old img if any
-        // if(Auth::user()->avatar && File::exists(base_path().'/public/'.Auth::user()->avatar)){
-        //     File::delete(base_path().'/public/'.Auth::user()->avatar);
-        // }
         if($request->hasFile('avatar')){
             $file = $request->file('avatar');
             $fileName = Carbon::now()->format('YmdHis').'_'.$file->getClientOriginalName();
@@ -98,12 +96,7 @@ class ProductController extends Controller
     {
         $request['slug'] = Str::slug($request->slug);
         $request->has('active') ? $request['active'] = true : $request['active'] = false;
-        if($request->hasFile('avatar')){
-            Product::find($request->id)->update($this->saveImage($request));
-        }else{
-            unset($request['avatar']);
-            Product::find($request->id)->update($request->all());
-        }
+        Product::find($request->id)->update($request->all());
         return response()->json([
             'code'      => 200,
             'status'    => 'success',
