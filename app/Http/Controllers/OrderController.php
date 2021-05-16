@@ -53,7 +53,7 @@ class OrderController extends Controller
                     'status' => 'error',
                     'message' => 'The user_id field is required.',
                 ], 422);
-                
+
             }
         } catch (\Exception  $e) {
             return $this->outputError($e);
@@ -110,7 +110,7 @@ class OrderController extends Controller
             $total = 0;
             $order = Order::create([
                 // 'user_id' => Auth::user()->id,
-                'user_id' => 1,
+//                'user_id' => 1,
                 'total'   => $total
             ]);
             foreach($request->products as $value){

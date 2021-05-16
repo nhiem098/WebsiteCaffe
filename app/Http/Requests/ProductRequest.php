@@ -19,7 +19,7 @@ class ProductRequest extends FormRequest
     {
         return true;
     }
-    
+
     protected function failedValidation(Validator $validator)
     {
         $errors = (new ValidationException($validator))->errors();
@@ -41,14 +41,14 @@ class ProductRequest extends FormRequest
             'name'          => 'required',
             'price'         => 'required|numeric',
             'category_id'   => 'required',
-            'avatar'        => 'mimes:jpeg,jpg,png,gif',
+            'avatar'        => 'required',
         ];
     }
 
     public function messages()
     {
         return [
-            
+
         ];
     }
 }

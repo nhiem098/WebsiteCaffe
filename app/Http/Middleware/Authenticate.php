@@ -28,14 +28,14 @@ class Authenticate extends Middleware
      */
     public function handle($request, Closure $next, $guard = null)
     {
-        if ($this->auth->guard($guard)->guest()) {
-            return response()->json([
-                'status'    => 'failed',
-                'code'      => 401,
-                'message'   => 'Your login session has expired, please login again'
-            ]);
-        }
-        
+//        if ($this->auth->guard($guard)->guest()) {
+//            return response()->json([
+//                'status'    => 'failed',
+//                'code'      => 401,
+//                'message'   => 'Your login session has expired, please login again'
+//            ]);
+//        }
+
         return $next($request);
     }
 }
