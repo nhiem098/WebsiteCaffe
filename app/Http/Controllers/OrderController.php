@@ -124,6 +124,14 @@ class OrderController extends Controller
                         'total'      => $number * $product->price,
                     ]);
                     $total = $total + $detail->total;
+                }else{
+                    $order->orderDetail()->delete();
+                    $order->delete();
+                    return response()->json([
+                        'code'  => 400,
+                        'status' => 'failed',
+                        'message' => 'Product not found.',
+                    ], 400);
                 }
             }
             $order->update(['total' => $total]);
