@@ -113,7 +113,7 @@ class OrderController extends Controller
                 'user_id' => 1,
                 'total'   => $total
             ]);
-            foreach($request->product as $value){
+            foreach($request->products as $value){
                 $product = Product::find($value->id ?? $value['id']);
                 $number = (int) ($value->number ?? $value['number']) ?? 1;
                 $detail = $order->orderDetail()->create([
