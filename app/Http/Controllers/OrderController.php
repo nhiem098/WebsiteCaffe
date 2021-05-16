@@ -111,6 +111,8 @@ class OrderController extends Controller
             $order = Order::create([
                 // 'user_id' => Auth::user()->id,
 //                'user_id' => 1,
+                'address' => $request->address,
+                'note' => $request->note,
                 'total'   => $total
             ]);
             foreach($request->products as $value){

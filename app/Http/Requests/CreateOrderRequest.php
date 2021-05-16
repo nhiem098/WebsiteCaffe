@@ -19,7 +19,7 @@ class CreateOrderRequest extends FormRequest
     {
         return true;
     }
-    
+
     protected function failedValidation(Validator $validator)
     {
         $errors = (new ValidationException($validator))->errors();
@@ -45,7 +45,7 @@ class CreateOrderRequest extends FormRequest
     public function messages()
     {
         return [
-            
+
         ];
     }
 }

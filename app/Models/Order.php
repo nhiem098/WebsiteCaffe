@@ -12,7 +12,7 @@ class Order extends Model
     // protected $with = ['orderDetail', 'user'];
     protected $with = ['orderDetail'];
 
-    protected $fillable = ['user_id', 'total'];
+    protected $fillable = ['user_id','address', 'note', 'total'];
 
     public function orderDetail()
     {
