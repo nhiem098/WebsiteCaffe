@@ -32,5 +32,9 @@ Route::post('/login', 'AuthController@login')->name('login');
         Route::post('/', 'OrderController@store');                          // Create new order
         Route::delete('/', 'OrderController@destroy');                      // Delete order
         Route::get('/{order}', 'OrderController@show');                     // Find order
+        Route::post('/update-status', 'OrderController@updateStatus');      // Update order order
+    });
+    Route::prefix('user')->group(function () {
+        Route::post('/update-token-firebase', 'UserController@updateTokenFirebase');
     });
 //});

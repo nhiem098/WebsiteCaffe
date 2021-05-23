@@ -22,6 +22,7 @@ class User extends Authenticatable implements JWTSubject
         'email',
         'remember_token',
         'password',
+        'token_firebase'
     ];
 
     /**

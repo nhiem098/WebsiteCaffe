@@ -178,4 +178,33 @@ class OrderController extends Controller
             return $this->outputError($e);
         }
     }
+
+    public function updateStatus(Request $request){
+        $orderId = $request->get('order_id', null);
+        if($orderId){
+            $order = Order::find($orderId);
+            if($order){
+                $order->update([
+                    'status' => $request->get('status', 1)
+                ]);
+                return response()->json([
+                    'code'  => 200,
+                    'status' => 'success',
+                    'message' => 'Update status of order successfully.',
+                ], 200);
+            }else{
+                return response()->json([
+                    'code'  => 400,
+                    'status' => 'failed',
+                    'message' => 'Order not found.',
+                ], 400);
+            }
+        }else{
+            return response()->json([
+                'code'  => 422,
+                'status' => 'error',
+                'message' => 'The order_id field is required.',
+            ], 422);
+        }
+    }
 }
